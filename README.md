@@ -2,9 +2,9 @@
 
 Individuellement ou en binôme, en adoptant une approche TDD, vous élaborez une classe déclenchant des tâches planifiées.
 
-> [!warning] Things to consider
-L'absence de commit git pour chacune des 3 étapes (Red, green, refactor) de la majorité des itérations TDD de l'atelier rendra l'atelier hors-sujet (oublis ponctuels tolérés).
->
+> [!warning]
+> L'absence de commit git pour chacune des 3 étapes (Red, green, refactor) de la majorité des itérations TDD de l'atelier rendra l'atelier hors-sujet (oublis ponctuels tolérés).
+
 
 Coder progressivement, test après test, une classe Scheduler qui gère l'exécution de tâches planifiées. Pour cela, cette classe possèdera A TERME les membres suivants :
 
