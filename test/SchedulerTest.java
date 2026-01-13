@@ -12,4 +12,9 @@ public class SchedulerTest {
         Scheduler scheduler = new Scheduler(Clock.system(ZoneId.of("Europe/Paris")));
         assertNotNull(scheduler);
     }
+
+    @Test
+    void neDoitPasInitialiserScheduler() {
+        assertThrows(IllegalArgumentException.class, () -> new Scheduler(null));
+    }
 }
