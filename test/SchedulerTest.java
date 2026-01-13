@@ -39,7 +39,7 @@ public class SchedulerTest {
      */
     @Test
     void doitAjouterUneTache(){
-        Task task = new Task("backup", "* * 12 1/1 * ? *", () -> {});
+        Task task = new Task("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");});
 
         assertDoesNotThrow(() -> scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
         List<Task> tasks = scheduler.getTasks();
@@ -49,4 +49,17 @@ public class SchedulerTest {
         assertEquals(task.getPeriodicity(), tasks.getFirst().getPeriodicity());
         assertDoesNotThrow(() ->tasks.getFirst().getRunnable().run());
     }
+
+    @Test
+    void doitModifierUneTache(){
+        Task task = new Task("backup", "* * 12 1/2 * ? *", () -> {System.out.println("backup");});
+
+        scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");});
+        List<Task> tasks = scheduler.getTasks();
+        scheduler.setTask("backup", "* * 12 1/2 * ? *", () -> {System.out.println("backup");});
+
+        assertEquals(task.getName(), tasks.getFirst().getName());
+        assertEquals(task.getPeriodicity(), tasks.getFirst().getPeriodicity());
+    }
+
 }
