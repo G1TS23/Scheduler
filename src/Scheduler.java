@@ -1,4 +1,5 @@
 import java.time.Clock;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,6 +14,6 @@ public class Scheduler {
     }
 
     public List<String> getTasks() {
-        return null;
+        return new ArrayList<>();
     }
 }
