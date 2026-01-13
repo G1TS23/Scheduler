@@ -31,6 +31,13 @@ public class Scheduler {
      * @param runnable
      */
     public void setTask(String name, String periodicity, Runnable runnable){
+        for (Task task : this.tasks) {
+            if(task.getName().equals(name)){
+                task.setPeriodicity(periodicity);
+                task.setRunnable(runnable);
+                return;
+            }
+        }
         Task task = new Task(name, periodicity, runnable);
         this.tasks.add(task);
     }
