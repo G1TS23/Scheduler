@@ -1,7 +1,7 @@
 import java.time.Clock;
 
 public class Scheduler {
-    private Clock clock;
+    private final Clock clock;
 
     public Scheduler(Clock clock) {
         this.clock = clock;
