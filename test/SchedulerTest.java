@@ -17,4 +17,14 @@ public class SchedulerTest {
     void neDoitPasInitialiserScheduler() {
         assertThrows(IllegalArgumentException.class, () -> new Scheduler(null));
     }
+
+    /**
+     * Verifies scheduler returns empty task list after initialization
+     */
+    @Test
+    void doitRetournerLaListeDesTachesVide() {
+        Scheduler scheduler = new Scheduler(Clock.system(ZoneId.of("Europe/Paris")));
+        assertNotNull(scheduler.getTasks());
+        assertTrue(scheduler.getTasks().isEmpty());
+    }
 }
