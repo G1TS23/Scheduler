@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
@@ -7,10 +8,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SchedulerTest {
+    private Scheduler scheduler;
+
+    @BeforeEach
+    void setUp() {
+        scheduler = new Scheduler(Clock.system(ZoneId.of("Europe/Paris")));
+    }
 
     @Test
     void doitInitialiserScheduler() {
-        Scheduler scheduler = new Scheduler(Clock.system(ZoneId.of("Europe/Paris")));
         assertNotNull(scheduler);
     }
 
@@ -24,22 +30,23 @@ public class SchedulerTest {
      */
     @Test
     void doitRetournerLaListeDesTachesVide() {
-        Scheduler scheduler = new Scheduler(Clock.system(ZoneId.of("Europe/Paris")));
         assertNotNull(scheduler.getTasks());
         assertTrue(scheduler.getTasks().isEmpty());
     }
 
+    /**
+     * Adds task; verifies task properties and execution
+     */
     @Test
     void doitAjouterUneTache(){
-        Scheduler scheduler = new Scheduler(Clock.system(ZoneId.of("Europe/Paris")));
-        Scheduler.Task task = new Scheduler.Task("backup", "* * 12 1/1 * ? *", () -> {});
+        Task task = new Task("backup", "* * 12 1/1 * ? *", () -> {});
 
-        scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");});
-        List<Scheduler.Task> tasks = scheduler.getTasks();
+        assertDoesNotThrow(() -> scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
+        List<Task> tasks = scheduler.getTasks();
 
         assertEquals(1, tasks.size());
-        assertEquals(task.name, tasks.getFirst().name);
-        assertEquals(task.periodicity, tasks.getFirst().periodicity);
-        assertDoesNotThrow(() ->tasks.getFirst().runnable.run());
+        assertEquals(task.getName(), tasks.getFirst().getName());
+        assertEquals(task.getPeriodicity(), tasks.getFirst().getPeriodicity());
+        assertDoesNotThrow(() ->tasks.getFirst().getRunnable().run());
     }
 }

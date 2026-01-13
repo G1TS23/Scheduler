@@ -5,18 +5,6 @@ import java.util.Objects;
 
 public class Scheduler {
 
-    public static class Task{
-        public String name;
-        public String periodicity;
-        public Runnable runnable;
-
-        public Task(String name, String periodicity, Runnable runnable){
-            this.name = name;
-            this.periodicity = periodicity;
-            this.runnable = runnable;
-        }
-    }
-
     private final Clock clock;
     private final List<Task> tasks;
 
@@ -36,6 +24,12 @@ public class Scheduler {
         return this.tasks;
     }
 
+    /**
+     * Function that adds a task to the scheduler
+     * @param name
+     * @param periodicity
+     * @param runnable
+     */
     public void setTask(String name, String periodicity, Runnable runnable){
         Task task = new Task(name, periodicity, runnable);
         this.tasks.add(task);
