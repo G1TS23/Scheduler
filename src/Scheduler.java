@@ -1,4 +1,5 @@
 import java.time.Clock;
+import java.util.List;
 import java.util.Objects;
 
 public class Scheduler {
@@ -9,5 +10,9 @@ public class Scheduler {
             throw new IllegalArgumentException("clock cannot be null");
         }
         this.clock = clock;
+    }
+
+    public List<String> getTasks() {
+        return null;
     }
 }
