@@ -2,7 +2,7 @@
 
 Individuellement ou en binôme, en adoptant une approche TDD, vous élaborez une classe déclenchant des tâches planifiées.
 
-> [!warning]
+> [!warning] Important
 > L'absence de commit git pour chacune des 3 étapes (Red, green, refactor) de la majorité des itérations TDD de l'atelier rendra l'atelier hors-sujet (oublis ponctuels tolérés).
 
 
