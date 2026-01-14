@@ -193,6 +193,6 @@ public class SchedulerTest {
     void doitExecuterUpdateSansTache(){
         Clock clock = Clock.system(ZoneId.of("Europe/Paris"));
         Scheduler scheduler = new Scheduler(clock);
-        assertDoesNotThrow(() -> scheduler.update());
+        assertDoesNotThrow(scheduler::update);
     }
 }
