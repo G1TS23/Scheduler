@@ -173,4 +173,20 @@ public class SchedulerTest {
         }
         verify(mockRunnable, times(4)).run();
     }
+
+    @Test
+    void doitLancerPlusieursTachesSelonLeurPeriodicite() throws InterruptedException {
+        Clock clock = Clock.system(ZoneId.of("Europe/Paris"));
+        Scheduler scheduler = new Scheduler(clock);
+        Runnable mockRunnable1 = mock(Runnable.class);;
+        Runnable mockRunnable2 = mock(Runnable.class);;
+        scheduler.setTask("backup", "*/5 * * * * ? *", mockRunnable1);
+        scheduler.setTask("backup2", "*/10 * * * * ? *", mockRunnable2);
+        for(int i = 0; i < 20; i++) {
+            scheduler.update();
+            Thread.sleep(1000L);
+        }
+        verify(mockRunnable1, times(4)).run();
+        verify(mockRunnable2, times(2)).run();
+    }
 }
