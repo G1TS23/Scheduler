@@ -62,4 +62,11 @@ public class SchedulerTest {
         assertEquals("* * 12 1/2 * ? *", tasks.get("backup").getPeriodicity());
     }
 
+    @Test
+    void doitRetournerErreurSiParametreNull() {
+        assertThrows(NullPointerException.class, () -> scheduler.setTask(null, "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
+        assertThrows(NullPointerException.class, () -> scheduler.setTask("backup", null, () -> {System.out.println("backup");}));
+        assertThrows(NullPointerException.class, () -> scheduler.setTask("backup", "* * 12 1/1 * ? *", null));
+    }
+
 }
