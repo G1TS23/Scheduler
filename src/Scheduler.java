@@ -41,6 +41,8 @@ public class Scheduler {
      * @param name
      */
     public void deleteTask(String name){
-        this.tasks.remove(name);
+        if (Objects.isNull(this.tasks.remove(name))){
+            throw new IllegalArgumentException("task does not exist");
+        }
     }
 }
