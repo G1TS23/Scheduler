@@ -2,6 +2,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.HashMap;
@@ -153,5 +154,17 @@ public class SchedulerTest {
         scheduler.setTask("backup", "* * 13 1/1 * ? *", mockRunnable);
         scheduler.update();
         verify(mockRunnable, times(0)).run();
+    }
+
+    @Test
+    void doitLancerUneTacheSelonSaPeriodicite() throws InterruptedException {
+        Clock clock = Clock.system(ZoneId.of("Europe/Paris"));
+        Scheduler scheduler = new Scheduler(clock);
+        scheduler.setTask("backup", "*/5 * * * * ? *", mockRunnable);
+        for(int i = 0; i < 20; i++) {
+            scheduler.update();
+            Thread.sleep(1000L);
+        }
+        verify(mockRunnable, times(4)).run();
     }
 }
