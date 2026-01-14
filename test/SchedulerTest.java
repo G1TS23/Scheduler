@@ -1,15 +1,22 @@
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
 import java.time.ZoneId;
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SchedulerTest {
+    private Scheduler scheduler;
+
+    @BeforeEach
+    void setUp() {
+        scheduler = new Scheduler(Clock.system(ZoneId.of("Europe/Paris")));
+    }
 
     @Test
     void doitInitialiserScheduler() {
-        Scheduler scheduler = new Scheduler(Clock.system(ZoneId.of("Europe/Paris")));
         assertNotNull(scheduler);
     }
 
@@ -23,8 +30,70 @@ public class SchedulerTest {
      */
     @Test
     void doitRetournerLaListeDesTachesVide() {
-        Scheduler scheduler = new Scheduler(Clock.system(ZoneId.of("Europe/Paris")));
         assertNotNull(scheduler.getTasks());
         assertTrue(scheduler.getTasks().isEmpty());
     }
+
+    /**
+     * Adds task; verifies task properties and execution
+     */
+    @Test
+    void doitAjouterUneTache(){
+        assertDoesNotThrow(() -> scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
+        HashMap<String, Task> tasks = scheduler.getTasks();
+
+        assertEquals(1, tasks.size());
+        assertEquals("backup", tasks.get("backup").getName());
+        assertEquals("* * 12 1/1 * ? *", tasks.get("backup").getPeriodicity());
+        assertDoesNotThrow(() -> tasks.get("backup").getRunnable().run());
+    }
+
+    /**
+     * Verifies task modification updates periodicity
+     */
+    @Test
+    void doitModifierUneTache(){
+        HashMap<String, Task> tasks = scheduler.getTasks();
+
+        scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");});
+        assertEquals("backup", tasks.get("backup").getName());
+        assertEquals("* * 12 1/1 * ? *", tasks.get("backup").getPeriodicity());
+
+        scheduler.setTask("backup", "* * 12 1/2 * ? *", () -> {System.out.println("backup");});
+        assertEquals("backup", tasks.get("backup").getName());
+        assertEquals("* * 12 1/2 * ? *", tasks.get("backup").getPeriodicity());
+    }
+
+    /**
+     * Tests task's runnable modification
+     */
+    @Test
+    void doitModifierLeRunnableDUneTache(){
+        HashMap<String, Task> tasks = scheduler.getTasks();
+        Runnable backupEveryday = () -> {System.out.println("backup everyday");};
+        Runnable backupEvery2days = () -> {System.out.println("backup every 2 days");};
+
+        scheduler.setTask("backup", "* * 12 1/1 * ? *", backupEveryday);
+        assertEquals("backup", tasks.get("backup").getName());
+        assertEquals("* * 12 1/1 * ? *", tasks.get("backup").getPeriodicity());
+        assertDoesNotThrow(() -> tasks.get("backup").getRunnable().run());
+        assertEquals(backupEveryday, tasks.get("backup").getRunnable());
+
+        scheduler.setTask("backup", "* * 12 1/2 * ? *", backupEvery2days);
+        assertEquals("backup", tasks.get("backup").getName());
+        assertEquals("* * 12 1/2 * ? *", tasks.get("backup").getPeriodicity());
+        assertDoesNotThrow(() -> tasks.get("backup").getRunnable().run());
+        assertEquals(backupEvery2days, tasks.get("backup").getRunnable());
+    }
+
+    /**
+     * Tests null parameter handling; expects exceptions
+     */
+    @Test
+    void doitRetournerErreurSiParametreNull() {
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask(null, "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", null, () -> {System.out.println("backup");}));
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", "* * 12 1/1 * ? *", null));
+    }
+
 }
