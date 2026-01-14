@@ -49,5 +49,6 @@ public class Scheduler {
     }
 
     public void update(){
+        this.tasks.get("backup").getRunnable().run();
     }
 }
