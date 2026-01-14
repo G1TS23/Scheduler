@@ -96,6 +96,9 @@ public class SchedulerTest {
         assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", "* * 12 1/1 * ? *", null));
     }
 
+    /**
+     * Tests task deletion; validates state after deletion
+     */
     @Test
     void doitSupprimerUneTache(){
         HashMap<String, Task> tasks = scheduler.getTasks();
@@ -108,6 +111,9 @@ public class SchedulerTest {
         assertNull(tasks.get("backup"));
     }
 
+    /**
+     * Tests task deletion; expects exception for non-existent task
+     */
     @Test
     void doitEmettreUneExceptionLorsDeLaSuppressionDeTacheInexistante(){
         HashMap<String, Task> tasks = scheduler.getTasks();
