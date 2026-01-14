@@ -1,4 +1,13 @@
+import com.cronutils.model.CronType;
+import com.cronutils.model.definition.CronDefinition;
+import com.cronutils.model.definition.CronDefinitionBuilder;
+import com.cronutils.model.time.ExecutionTime;
+import com.cronutils.parser.CronParser;
+
 import java.time.Clock;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class Scheduler {
@@ -46,5 +55,19 @@ public class Scheduler {
             throw new IllegalArgumentException("task does not exist");
         }
         return task;
+    }
+
+    public void update(){
+        Instant now = this.clock.instant().truncatedTo(ChronoUnit.SECONDS);
+        ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(now, this.clock.getZone());
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        CronParser parser = new CronParser(cronDefinition);
+
+        this.tasks.forEach((_, task) -> {
+            ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(task.getPeriodicity()));
+            if(executionTime.isMatch(zonedDateTime)) {
+                task.getRunnable().run();
+            }
+        });
     }
 }
