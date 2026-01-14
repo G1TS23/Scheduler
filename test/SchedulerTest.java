@@ -144,4 +144,14 @@ public class SchedulerTest {
         scheduler.update();
         verify(mockRunnable).run();
     }
+
+    @Test
+    void neDoitPasLancerLaTache(){
+        Clock mockClock = Clock.fixed(Instant.ofEpochSecond(39600L), ZoneId.of("Europe/Paris"));
+        Scheduler scheduler = new Scheduler(mockClock);
+        Runnable mockRunnable = mock(Runnable.class);
+        scheduler.setTask("backup", "* * 13 1/1 * ? *", mockRunnable);
+        scheduler.update();
+        verify(mockRunnable, times(0)).run();
+    }
 }
