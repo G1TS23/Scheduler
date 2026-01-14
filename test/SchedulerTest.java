@@ -108,4 +108,14 @@ public class SchedulerTest {
         assertNull(tasks.get("backup"));
     }
 
+    @Test
+    void doitEmettreUneExceptionLorsDeLaSuppressionDeTacheInexistante(){
+        HashMap<String, Task> tasks = scheduler.getTasks();
+        assertDoesNotThrow(() -> scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
+
+        assertThrows(IllegalArgumentException.class, () -> scheduler.deleteTask("save"));
+    }
+
+    @Test
+    void doitEmettreUneExceptionLorsDeLaSuppressionAvecNomNull(){}
 }
