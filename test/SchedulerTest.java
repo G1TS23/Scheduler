@@ -96,4 +96,16 @@ public class SchedulerTest {
         assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", "* * 12 1/1 * ? *", null));
     }
 
+    @Test
+    void doitSupprimerUneTache(){
+        HashMap<String, Task> tasks = scheduler.getTasks();
+        assertDoesNotThrow(() -> scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
+        assertEquals(1, scheduler.getTasks().size());
+        assertNotNull(tasks.get("backup"));
+
+        assertDoesNotThrow(() -> scheduler.deleteTask("backup"));
+        assertEquals(0, scheduler.getTasks().size());
+        assertNull(tasks.get("backup"));
+    }
+
 }

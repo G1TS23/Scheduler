@@ -35,4 +35,7 @@ public class Scheduler {
         Task task = new Task(name, periodicity, runnable);
         this.tasks.put(name, task);
     }
+
+    public void deleteTask(String name){
+    }
 }
