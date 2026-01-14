@@ -30,6 +30,9 @@ public class Scheduler {
      * @param runnable
      */
     public void setTask(String name, String periodicity, Runnable runnable){
+        if (Objects.isNull(name) || Objects.isNull(periodicity) || Objects.isNull(runnable)) {
+            throw new IllegalArgumentException("parameter cannot be null");
+        }
         Task task = new Task(name, periodicity, runnable);
         this.tasks.put(name, task);
     }

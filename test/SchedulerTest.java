@@ -64,9 +64,9 @@ public class SchedulerTest {
 
     @Test
     void doitRetournerErreurSiParametreNull() {
-        assertThrows(NullPointerException.class, () -> scheduler.setTask(null, "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
-        assertThrows(NullPointerException.class, () -> scheduler.setTask("backup", null, () -> {System.out.println("backup");}));
-        assertThrows(NullPointerException.class, () -> scheduler.setTask("backup", "* * 12 1/1 * ? *", null));
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask(null, "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", null, () -> {System.out.println("backup");}));
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", "* * 12 1/1 * ? *", null));
     }
 
 }
