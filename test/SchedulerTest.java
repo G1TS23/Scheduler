@@ -63,6 +63,25 @@ public class SchedulerTest {
     }
 
     @Test
+    void doitModifierLeRunnableDUneTache(){
+        HashMap<String, Task> tasks = scheduler.getTasks();
+        Runnable backupEveryday = () -> {System.out.println("backup everyday");};
+        Runnable backupEvery2days = () -> {System.out.println("backup every 2 days");};
+
+        scheduler.setTask("backup", "* * 12 1/1 * ? *", backupEveryday);
+        assertEquals("backup", tasks.get("backup").getName());
+        assertEquals("* * 12 1/1 * ? *", tasks.get("backup").getPeriodicity());
+        assertDoesNotThrow(() -> tasks.get("backup").getRunnable().run());
+        assertEquals(backupEveryday, tasks.get("backup").getRunnable());
+
+        scheduler.setTask("backup", "* * 12 1/2 * ? *", backupEvery2days);
+        assertEquals("backup", tasks.get("backup").getName());
+        assertEquals("* * 12 1/2 * ? *", tasks.get("backup").getPeriodicity());
+        assertDoesNotThrow(() -> tasks.get("backup").getRunnable().run());
+        assertEquals(backupEvery2days, tasks.get("backup").getRunnable());
+    }
+
+    @Test
     void doitRetournerErreurSiParametreNull() {
         assertThrows(IllegalArgumentException.class, () -> scheduler.setTask(null, "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
         assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", null, () -> {System.out.println("backup");}));
