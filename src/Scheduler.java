@@ -63,7 +63,7 @@ public class Scheduler {
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         CronParser parser = new CronParser(cronDefinition);
 
-        this.tasks.forEach((name, task) -> {
+        this.tasks.forEach((_, task) -> {
             ExecutionTime executionTime = ExecutionTime.forCron(parser.parse(task.getPeriodicity()));
             if(executionTime.isMatch(zonedDateTime)) {
                 task.getRunnable().run();

@@ -11,10 +11,12 @@ import static org.mockito.Mockito.*;
 
 public class SchedulerTest {
     private Scheduler scheduler;
+    private Runnable mockRunnable;
 
     @BeforeEach
     void setUp() {
         scheduler = new Scheduler(Clock.system(ZoneId.of("Europe/Paris")));
+        mockRunnable = mock(Runnable.class);
     }
 
     @Test
@@ -41,7 +43,7 @@ public class SchedulerTest {
      */
     @Test
     void doitAjouterUneTache(){
-        assertDoesNotThrow(() -> scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
+        assertDoesNotThrow(() -> scheduler.setTask("backup", "* * 12 1/1 * ? *", mockRunnable));
         HashMap<String, Task> tasks = scheduler.getTasks();
 
         assertEquals(1, tasks.size());
@@ -57,11 +59,11 @@ public class SchedulerTest {
     void doitModifierUneTache(){
         HashMap<String, Task> tasks = scheduler.getTasks();
 
-        scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");});
+        scheduler.setTask("backup", "* * 12 1/1 * ? *", mockRunnable);
         assertEquals("backup", tasks.get("backup").getName());
         assertEquals("* * 12 1/1 * ? *", tasks.get("backup").getPeriodicity());
 
-        scheduler.setTask("backup", "* * 12 1/2 * ? *", () -> {System.out.println("backup");});
+        scheduler.setTask("backup", "* * 12 1/2 * ? *", mockRunnable);
         assertEquals("backup", tasks.get("backup").getName());
         assertEquals("* * 12 1/2 * ? *", tasks.get("backup").getPeriodicity());
     }
@@ -72,20 +74,20 @@ public class SchedulerTest {
     @Test
     void doitModifierLeRunnableDUneTache(){
         HashMap<String, Task> tasks = scheduler.getTasks();
-        Runnable backupEveryday = () -> {System.out.println("backup everyday");};
-        Runnable backupEvery2days = () -> {System.out.println("backup every 2 days");};
+        Runnable mockRunnable1 = mock(Runnable.class);;
+        Runnable mockRunnable2 = mock(Runnable.class);;
 
-        scheduler.setTask("backup", "* * 12 1/1 * ? *", backupEveryday);
+        scheduler.setTask("backup", "* * 12 1/1 * ? *", mockRunnable1);
         assertEquals("backup", tasks.get("backup").getName());
         assertEquals("* * 12 1/1 * ? *", tasks.get("backup").getPeriodicity());
         assertDoesNotThrow(() -> tasks.get("backup").getRunnable().run());
-        assertEquals(backupEveryday, tasks.get("backup").getRunnable());
+        assertEquals(mockRunnable1, tasks.get("backup").getRunnable());
 
-        scheduler.setTask("backup", "* * 12 1/2 * ? *", backupEvery2days);
+        scheduler.setTask("backup", "* * 12 1/2 * ? *", mockRunnable2);
         assertEquals("backup", tasks.get("backup").getName());
         assertEquals("* * 12 1/2 * ? *", tasks.get("backup").getPeriodicity());
         assertDoesNotThrow(() -> tasks.get("backup").getRunnable().run());
-        assertEquals(backupEvery2days, tasks.get("backup").getRunnable());
+        assertEquals(mockRunnable2, tasks.get("backup").getRunnable());
     }
 
     /**
@@ -93,8 +95,8 @@ public class SchedulerTest {
      */
     @Test
     void doitRetournerErreurSiParametreNull() {
-        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask(null, "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
-        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", null, () -> {System.out.println("backup");}));
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask(null, "* * 12 1/1 * ? *", mockRunnable));
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", null, mockRunnable));
         assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", "* * 12 1/1 * ? *", null));
     }
 
@@ -104,7 +106,7 @@ public class SchedulerTest {
     @Test
     void doitSupprimerUneTache(){
         HashMap<String, Task> tasks = scheduler.getTasks();
-        assertDoesNotThrow(() -> scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
+        assertDoesNotThrow(() -> scheduler.setTask("backup", "* * 12 1/1 * ? *", mockRunnable));
         assertEquals(1, scheduler.getTasks().size());
         assertNotNull(tasks.get("backup"));
 
@@ -119,7 +121,7 @@ public class SchedulerTest {
     @Test
     void doitEmettreUneExceptionLorsDeLaSuppressionDeTacheInexistante(){
         HashMap<String, Task> tasks = scheduler.getTasks();
-        assertDoesNotThrow(() -> scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
+        assertDoesNotThrow(() -> scheduler.setTask("backup", "* * 12 1/1 * ? *", mockRunnable));
 
         assertThrows(IllegalArgumentException.class, () -> scheduler.deleteTask("save"));
     }
@@ -127,7 +129,7 @@ public class SchedulerTest {
     @Test
     void doitEmettreUneExceptionLorsDeLaSuppressionAvecNomNull(){
         HashMap<String, Task> tasks = scheduler.getTasks();
-        assertDoesNotThrow(() -> scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
+        assertDoesNotThrow(() -> scheduler.setTask("backup", "* * 12 1/1 * ? *", mockRunnable));
 
         assertThrows(IllegalArgumentException.class, () -> scheduler.deleteTask(null));
     }
@@ -139,7 +141,6 @@ public class SchedulerTest {
     void doitLancerLaTacheALHeure(){
         Clock mockClock = Clock.fixed(Instant.ofEpochSecond(39600L), ZoneId.of("Europe/Paris"));
         Scheduler scheduler = new Scheduler(mockClock);
-        Runnable mockRunnable = mock(Runnable.class);
         scheduler.setTask("backup", "* * 12 1/1 * ? *", mockRunnable);
         scheduler.update();
         verify(mockRunnable).run();
@@ -149,7 +150,6 @@ public class SchedulerTest {
     void neDoitPasLancerLaTache(){
         Clock mockClock = Clock.fixed(Instant.ofEpochSecond(39600L), ZoneId.of("Europe/Paris"));
         Scheduler scheduler = new Scheduler(mockClock);
-        Runnable mockRunnable = mock(Runnable.class);
         scheduler.setTask("backup", "* * 13 1/1 * ? *", mockRunnable);
         scheduler.update();
         verify(mockRunnable, times(0)).run();
