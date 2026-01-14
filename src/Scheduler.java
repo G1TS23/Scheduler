@@ -40,9 +40,11 @@ public class Scheduler {
      * Function that deletes a task from the scheduler
      * @param name
      */
-    public void deleteTask(String name){
-        if (Objects.isNull(this.tasks.remove(name))){
+    public Task deleteTask(String name){
+        Task task = this.tasks.remove(name);
+        if (Objects.isNull(task)){
             throw new IllegalArgumentException("task does not exist");
         }
+        return task;
     }
 }
