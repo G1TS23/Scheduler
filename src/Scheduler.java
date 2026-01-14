@@ -37,5 +37,6 @@ public class Scheduler {
     }
 
     public void deleteTask(String name){
+        this.tasks.remove(name);
     }
 }
