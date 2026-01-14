@@ -147,6 +147,9 @@ public class SchedulerTest {
         verify(mockRunnable).run();
     }
 
+    /**
+     * Task does not run when schedule is unmet
+     */
     @Test
     void neDoitPasLancerLaTache(){
         Clock mockClock = Clock.fixed(Instant.ofEpochSecond(39600L), ZoneId.of("Europe/Paris"));
@@ -156,6 +159,9 @@ public class SchedulerTest {
         verify(mockRunnable, times(0)).run();
     }
 
+    /**
+     * Task runs periodically according to schedule
+     */
     @Test
     void doitLancerUneTacheSelonSaPeriodicite() throws InterruptedException {
         Clock clock = Clock.system(ZoneId.of("Europe/Paris"));
