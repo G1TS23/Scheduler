@@ -188,4 +188,11 @@ public class SchedulerTest {
         verify(mockRunnable1, times(4)).run();
         verify(mockRunnable2, times(2)).run();
     }
+
+    @Test
+    void doitExecuterUpdateSansTache(){
+        Clock clock = Clock.system(ZoneId.of("Europe/Paris"));
+        Scheduler scheduler = new Scheduler(clock);
+        assertDoesNotThrow(() -> scheduler.update());
+    }
 }
