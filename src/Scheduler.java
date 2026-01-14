@@ -35,4 +35,16 @@ public class Scheduler {
         Task task = new Task(name, periodicity, runnable);
         this.tasks.put(name, task);
     }
+
+    /**
+     * Function that deletes a task from the scheduler
+     * @param name
+     */
+    public Task deleteTask(String name){
+        Task task = this.tasks.remove(name);
+        if (Objects.isNull(task)){
+            throw new IllegalArgumentException("task does not exist");
+        }
+        return task;
+    }
 }
