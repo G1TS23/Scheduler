@@ -36,6 +36,10 @@ public class Scheduler {
         this.tasks.put(name, task);
     }
 
+    /**
+     * Function that deletes a task from the scheduler
+     * @param name
+     */
     public void deleteTask(String name){
         this.tasks.remove(name);
     }
