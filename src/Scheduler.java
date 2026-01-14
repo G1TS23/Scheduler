@@ -58,7 +58,7 @@ public class Scheduler {
     }
 
     public void update(){
-        Instant now = this.clock.instant().truncatedTo(ChronoUnit.MINUTES);
+        Instant now = this.clock.instant().truncatedTo(ChronoUnit.SECONDS);
         ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(now, this.clock.getZone());
         CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
         CronParser parser = new CronParser(cronDefinition);
