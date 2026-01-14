@@ -2,10 +2,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 public class SchedulerTest {
     private Scheduler scheduler;
@@ -128,5 +130,15 @@ public class SchedulerTest {
         assertDoesNotThrow(() -> scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
 
         assertThrows(IllegalArgumentException.class, () -> scheduler.deleteTask(null));
+    }
+
+    @Test
+    void doitLancerLaTacheALHeure(){
+        Clock mockClock = Clock.fixed(Instant.ofEpochSecond(39600L), ZoneId.of("Europe/Paris"));
+        Scheduler scheduler = new Scheduler(mockClock);
+        Runnable mockRunnable = mock(Runnable.class);
+        scheduler.setTask("backup", "* * 12 1/1 * ? *", mockRunnable);
+        scheduler.update();
+        verify(mockRunnable).run();
     }
 }

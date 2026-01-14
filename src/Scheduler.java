@@ -47,4 +47,7 @@ public class Scheduler {
         }
         return task;
     }
+
+    public void update(){
+    }
 }
