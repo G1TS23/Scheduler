@@ -123,5 +123,10 @@ public class SchedulerTest {
     }
 
     @Test
-    void doitEmettreUneExceptionLorsDeLaSuppressionAvecNomNull(){}
+    void doitEmettreUneExceptionLorsDeLaSuppressionAvecNomNull(){
+        HashMap<String, Task> tasks = scheduler.getTasks();
+        assertDoesNotThrow(() -> scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
+
+        assertThrows(IllegalArgumentException.class, () -> scheduler.deleteTask(null));
+    }
 }
