@@ -2,7 +2,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.HashMap;
@@ -75,8 +74,8 @@ public class SchedulerTest {
     @Test
     void doitModifierLeRunnableDUneTache(){
         HashMap<String, Task> tasks = scheduler.getTasks();
-        Runnable mockRunnable1 = mock(Runnable.class);;
-        Runnable mockRunnable2 = mock(Runnable.class);;
+        Runnable mockRunnable1 = mock(Runnable.class);
+        Runnable mockRunnable2 = mock(Runnable.class);
 
         scheduler.setTask("backup", "* * 12 1/1 * ? *", mockRunnable1);
         assertEquals("backup", tasks.get("backup").getName());
@@ -178,8 +177,8 @@ public class SchedulerTest {
     void doitLancerPlusieursTachesSelonLeurPeriodicite() throws InterruptedException {
         Clock clock = Clock.system(ZoneId.of("Europe/Paris"));
         Scheduler scheduler = new Scheduler(clock);
-        Runnable mockRunnable1 = mock(Runnable.class);;
-        Runnable mockRunnable2 = mock(Runnable.class);;
+        Runnable mockRunnable1 = mock(Runnable.class);
+        Runnable mockRunnable2 = mock(Runnable.class);
         scheduler.setTask("backup", "*/5 * * * * ? *", mockRunnable1);
         scheduler.setTask("backup2", "*/10 * * * * ? *", mockRunnable2);
         for(int i = 0; i < 20; i++) {
