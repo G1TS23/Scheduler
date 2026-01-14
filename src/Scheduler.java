@@ -1,26 +1,25 @@
 import java.time.Clock;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Scheduler {
 
     private final Clock clock;
-    private final List<Task> tasks;
+    private final HashMap<String, Task> tasks;
 
     public Scheduler(Clock clock) {
         if (Objects.isNull(clock)) {
             throw new IllegalArgumentException("clock cannot be null");
         }
         this.clock = clock;
-        this.tasks = new ArrayList<>();
+        this.tasks = new HashMap<>();
     }
 
     /**
      * Function that returns the list of tasks
      * @return list of tasks
      */
-    public List<Task> getTasks() {
+    public HashMap<String, Task> getTasks() {
         return this.tasks;
     }
 
@@ -31,14 +30,7 @@ public class Scheduler {
      * @param runnable
      */
     public void setTask(String name, String periodicity, Runnable runnable){
-        for (Task task : this.tasks) {
-            if(task.getName().equals(name)){
-                task.setPeriodicity(periodicity);
-                task.setRunnable(runnable);
-                return;
-            }
-        }
         Task task = new Task(name, periodicity, runnable);
-        this.tasks.add(task);
+        this.tasks.put(name, task);
     }
 }

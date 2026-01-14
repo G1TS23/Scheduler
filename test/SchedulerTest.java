@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
 import java.time.ZoneId;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,27 +40,26 @@ public class SchedulerTest {
      */
     @Test
     void doitAjouterUneTache(){
-        Task task = new Task("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");});
-
         assertDoesNotThrow(() -> scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
-        List<Task> tasks = scheduler.getTasks();
+        HashMap<String, Task> tasks = scheduler.getTasks();
 
         assertEquals(1, tasks.size());
-        assertEquals(task.getName(), tasks.getFirst().getName());
-        assertEquals(task.getPeriodicity(), tasks.getFirst().getPeriodicity());
-        assertDoesNotThrow(() ->tasks.getFirst().getRunnable().run());
+        assertEquals("backup", tasks.get("backup").getName());
+        assertEquals("* * 12 1/1 * ? *", tasks.get("backup").getPeriodicity());
+        assertDoesNotThrow(() -> tasks.get("backup").getRunnable().run());
     }
 
     @Test
     void doitModifierUneTache(){
-        Task task = new Task("backup", "* * 12 1/2 * ? *", () -> {System.out.println("backup");});
+        HashMap<String, Task> tasks = scheduler.getTasks();
 
         scheduler.setTask("backup", "* * 12 1/1 * ? *", () -> {System.out.println("backup");});
-        List<Task> tasks = scheduler.getTasks();
-        scheduler.setTask("backup", "* * 12 1/2 * ? *", () -> {System.out.println("backup");});
+        assertEquals("backup", tasks.get("backup").getName());
+        assertEquals("* * 12 1/1 * ? *", tasks.get("backup").getPeriodicity());
 
-        assertEquals(task.getName(), tasks.getFirst().getName());
-        assertEquals(task.getPeriodicity(), tasks.getFirst().getPeriodicity());
+        scheduler.setTask("backup", "* * 12 1/2 * ? *", () -> {System.out.println("backup");});
+        assertEquals("backup", tasks.get("backup").getName());
+        assertEquals("* * 12 1/2 * ? *", tasks.get("backup").getPeriodicity());
     }
 
 }
