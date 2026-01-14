@@ -132,6 +132,9 @@ public class SchedulerTest {
         assertThrows(IllegalArgumentException.class, () -> scheduler.deleteTask(null));
     }
 
+    /**
+     * Test that the task runs at the scheduled time
+     */
     @Test
     void doitLancerLaTacheALHeure(){
         Clock mockClock = Clock.fixed(Instant.ofEpochSecond(39600L), ZoneId.of("Europe/Paris"));
