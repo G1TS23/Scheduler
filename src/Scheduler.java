@@ -1,6 +1,5 @@
 import java.time.Clock;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Scheduler {
 
@@ -24,7 +23,7 @@ public class Scheduler {
     }
 
     /**
-     * Function that adds a task to the scheduler
+     * Function that adds or modify a task to the scheduler
      * @param name
      * @param periodicity
      * @param runnable

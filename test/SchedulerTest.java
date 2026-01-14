@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import java.time.Clock;
 import java.time.ZoneId;
 import java.util.HashMap;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,6 +48,9 @@ public class SchedulerTest {
         assertDoesNotThrow(() -> tasks.get("backup").getRunnable().run());
     }
 
+    /**
+     * Verifies task modification updates periodicity
+     */
     @Test
     void doitModifierUneTache(){
         HashMap<String, Task> tasks = scheduler.getTasks();
@@ -62,6 +64,9 @@ public class SchedulerTest {
         assertEquals("* * 12 1/2 * ? *", tasks.get("backup").getPeriodicity());
     }
 
+    /**
+     * Tests task's runnable modification
+     */
     @Test
     void doitModifierLeRunnableDUneTache(){
         HashMap<String, Task> tasks = scheduler.getTasks();
@@ -81,6 +86,9 @@ public class SchedulerTest {
         assertEquals(backupEvery2days, tasks.get("backup").getRunnable());
     }
 
+    /**
+     * Tests null parameter handling; expects exceptions
+     */
     @Test
     void doitRetournerErreurSiParametreNull() {
         assertThrows(IllegalArgumentException.class, () -> scheduler.setTask(null, "* * 12 1/1 * ? *", () -> {System.out.println("backup");}));
