@@ -195,4 +195,12 @@ public class SchedulerTest {
         Scheduler scheduler = new Scheduler(clock);
         assertDoesNotThrow(scheduler::update);
     }
+
+    @Test
+    void doitAjouterUneTacheAvecUneExpressionCronCorrecte(){
+        HashMap<String, Task> tasks = scheduler.getTasks();
+        assertDoesNotThrow(() -> scheduler.setTask("backup", "0 0 12 * * ?", mockRunnable));
+        assertEquals(1, tasks.size());
+    }
+
 }
