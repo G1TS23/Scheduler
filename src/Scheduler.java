@@ -41,6 +41,15 @@ public class Scheduler {
         if (Objects.isNull(name) || Objects.isNull(periodicity) || Objects.isNull(runnable)) {
             throw new IllegalArgumentException("parameter cannot be null");
         }
+
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        CronParser parser = new CronParser(cronDefinition);
+        try {
+            parser.parse(periodicity);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("invalid periodicity");
+        }
+
         Task task = new Task(name, periodicity, runnable);
         this.tasks.put(name, task);
     }
