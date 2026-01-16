@@ -203,4 +203,13 @@ public class SchedulerTest {
         assertEquals(1, tasks.size());
     }
 
+    @Test
+    void doitEmettreUneExceptionLorsDeLAjoutDeTacheAvecUneExpressionCronIncorrecte(){
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", "0 0 12", mockRunnable));
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", "", mockRunnable));
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", "0 0 12 *", mockRunnable));
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", "0 0 26 * * ?", mockRunnable));
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", "tous les jours", mockRunnable));
+        assertTrue(scheduler.getTasks().isEmpty());
+    }
 }
