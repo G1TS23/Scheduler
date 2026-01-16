@@ -24,7 +24,7 @@ sch.update();
 Thread.sleep(1000);
 }
 ```
-Choisir une par une les périodicités à gérer parmi cette liste des syntaxes de la table cron (mais pas forcément sous forme de chaîne de caractères) par ordre de difficulté croissante. Il est demandé d'en gérer autant que possible.
+Choisir une par une les périodicités à gérer parmi cette liste des [syntaxes de la table cron](https://fr.wikipedia.org/wiki/Cron#Syntaxe_de_la_table) (mais pas forcément sous forme de chaîne de caractères) par ordre de difficulté croissante. Il est demandé d'en gérer autant que possible.
 
 Si votre implémentation l'exige, il est possible de coder des classes supplémentaires transformant certains tests unitaires en tests d'intégration.
 
