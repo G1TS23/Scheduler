@@ -163,27 +163,29 @@ public class SchedulerTest {
      */
     @Test
     void doitLancerUneTacheSelonSaPeriodicite() throws InterruptedException {
-        Clock clock = Clock.system(ZoneId.of("Europe/Paris"));
+        Instant startPoint = Instant.parse("2026-01-16T10:00:00Z");
+        Clock clock = Clock.fixed(startPoint, ZoneId.of("Europe/Paris"));
         Scheduler scheduler = new Scheduler(clock);
         scheduler.setTask("backup", "*/5 * * * * ? *", mockRunnable);
-        for(int i = 0; i < 20; i++) {
+        for(int i = 1; i < 20; i++) {
             scheduler.update();
-            Thread.sleep(1000L);
+            scheduler.setClock(Clock.fixed(startPoint.plusSeconds(i), ZoneId.of("Europe/Paris")));
         }
         verify(mockRunnable, times(4)).run();
     }
 
     @Test
     void doitLancerPlusieursTachesSelonLeurPeriodicite() throws InterruptedException {
-        Clock clock = Clock.system(ZoneId.of("Europe/Paris"));
+        Instant startPoint = Instant.parse("2026-01-16T10:00:00Z");
+        Clock clock = Clock.fixed(startPoint, ZoneId.of("Europe/Paris"));
         Scheduler scheduler = new Scheduler(clock);
         Runnable mockRunnable1 = mock(Runnable.class);
         Runnable mockRunnable2 = mock(Runnable.class);
         scheduler.setTask("backup", "*/5 * * * * ? *", mockRunnable1);
         scheduler.setTask("backup2", "*/10 * * * * ? *", mockRunnable2);
-        for(int i = 0; i < 20; i++) {
+        for(int i = 1; i < 20; i++) {
             scheduler.update();
-            Thread.sleep(1000L);
+            scheduler.setClock(Clock.fixed(startPoint.plusSeconds(i), ZoneId.of("Europe/Paris")));
         }
         verify(mockRunnable1, times(4)).run();
         verify(mockRunnable2, times(2)).run();
@@ -194,5 +196,22 @@ public class SchedulerTest {
         Clock clock = Clock.system(ZoneId.of("Europe/Paris"));
         Scheduler scheduler = new Scheduler(clock);
         assertDoesNotThrow(scheduler::update);
+    }
+
+    @Test
+    void doitAjouterUneTacheAvecUneExpressionCronCorrecte(){
+        HashMap<String, Task> tasks = scheduler.getTasks();
+        assertDoesNotThrow(() -> scheduler.setTask("backup", "0 0 12 * * ?", mockRunnable));
+        assertEquals(1, tasks.size());
+    }
+
+    @Test
+    void doitEmettreUneExceptionLorsDeLAjoutDeTacheAvecUneExpressionCronIncorrecte(){
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", "0 0 12", mockRunnable));
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", "", mockRunnable));
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", "0 0 12 *", mockRunnable));
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", "0 0 26 * * ?", mockRunnable));
+        assertThrows(IllegalArgumentException.class, () -> scheduler.setTask("backup", "tous les jours", mockRunnable));
+        assertTrue(scheduler.getTasks().isEmpty());
     }
 }

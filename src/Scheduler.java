@@ -12,7 +12,7 @@ import java.util.*;
 
 public class Scheduler {
 
-    private final Clock clock;
+    private Clock clock;
     private final HashMap<String, Task> tasks;
 
     public Scheduler(Clock clock) {
@@ -21,6 +21,10 @@ public class Scheduler {
         }
         this.clock = clock;
         this.tasks = new HashMap<>();
+    }
+
+    public void setClock(Clock clock) {
+        this.clock = clock;
     }
 
     /**
@@ -41,8 +45,24 @@ public class Scheduler {
         if (Objects.isNull(name) || Objects.isNull(periodicity) || Objects.isNull(runnable)) {
             throw new IllegalArgumentException("parameter cannot be null");
         }
+
+        if (!isCronValid(periodicity)) {
+            throw new IllegalArgumentException("invalid cron expression");
+        }
+
         Task task = new Task(name, periodicity, runnable);
         this.tasks.put(name, task);
+    }
+
+    private boolean isCronValid(String cron){
+        CronDefinition cronDefinition = CronDefinitionBuilder.instanceDefinitionFor(CronType.QUARTZ);
+        CronParser parser = new CronParser(cronDefinition);
+        try {
+            parser.parse(cron);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
